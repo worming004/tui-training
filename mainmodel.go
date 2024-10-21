@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/huh"
+	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/huh/v2"
 )
 
 // Just to ensure AppModel is a tea.Model
@@ -39,9 +39,10 @@ func NewMainModel() MainModel {
 }
 
 // Init implements tea.Model.
-func (a MainModel) Init() tea.Cmd {
+func (a MainModel) Init() (tea.Model, tea.Cmd) {
 	log.Println("AppModel Init")
-	return a.form.Init()
+	_, cmd := a.form.Init()
+	return a, cmd
 }
 
 // Update implements tea.Model.
@@ -68,9 +69,9 @@ func (a MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case ClientProjectType:
 			client := NewPageForClientModel()
 			// Doesn't not work without Init explicitely. Internally, it is using another huh form that require init
-			client.Init()
+			_, cmd = client.Init()
 			// Am I supposed to return a new model ? MainModel should handle the whole app and work as decorator for each sub-part of app ?
-			return client, tea.Batch(cmds...)
+			return client, tea.Batch(append(cmds, cmd)...)
 
 		case BackendProjectType, FrontendProjectType:
 			return a, tea.Batch(cmds...)

@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/huh"
+	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/huh/v2"
 )
 
 var page tea.Model = PageForClientModel{}
@@ -27,9 +27,10 @@ func NewPageForClientModel() PageForClientModel {
 }
 
 // Init implements tea.Model.
-func (p PageForClientModel) Init() tea.Cmd {
+func (p PageForClientModel) Init() (tea.Model, tea.Cmd) {
 	log.Println("PageForClient Init")
-	return p.form.Init()
+	_, cmd := p.form.Init()
+	return p, cmd
 }
 
 // Update implements tea.Model.
