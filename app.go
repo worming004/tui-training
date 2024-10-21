@@ -1,36 +1,24 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"os"
 
-	"github.com/charmbracelet/huh"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
-type Runner interface {
-	Run() (Runner, error)
-}
-
 func main() {
-	var runner Runner
-	runner = NewApp()
-	var err error
-	for {
-		runner, err = runner.Run()
-		if err != nil {
-			panic(err)
-		}
-		if runner == nil {
-			os.Exit(0)
-		}
+	logFile, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
 	}
-}
+	log.Default().SetOutput(logFile)
 
-type ProjectType string
-
-var BackendProjectType = ProjectType("Backend")
-var FrontendProjectType = ProjectType("Frontend")
-var ClientProjectType = ProjectType("Client")
-
-func ProjectTypeToOption(pt ProjectType) huh.Option[ProjectType] {
-	return huh.NewOption(string(pt), pt)
+	app := NewMainModel()
+	p := tea.NewProgram(app)
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
+	}
 }
