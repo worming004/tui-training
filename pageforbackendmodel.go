@@ -5,14 +5,14 @@ import (
 	"github.com/charmbracelet/huh/v2"
 )
 
-var clientPageModel tea.Model = PageForClientModel{}
+var pageForBackendClient tea.Model = PageForBackendModel{}
 
-type PageForClientModel struct {
+type PageForBackendModel struct {
 	form *huh.Form
 }
 
-func NewPageForClientModel() PageForClientModel {
-	return PageForClientModel{
+func NewPageForBackendModel() PageForBackendModel {
+	return PageForBackendModel{
 		form: huh.NewForm(
 			huh.NewGroup(
 				huh.NewInput().
@@ -24,14 +24,12 @@ func NewPageForClientModel() PageForClientModel {
 	}
 }
 
-// Init implements tea.Model.
-func (p PageForClientModel) Init() (tea.Model, tea.Cmd) {
+func (p PageForBackendModel) Init() (tea.Model, tea.Cmd) {
 	_, cmd := p.form.Init()
 	return p, cmd
 }
 
-// Update implements tea.Model.
-func (p PageForClientModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (p PageForBackendModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmds := []tea.Cmd{}
 
 	form, cmd := p.form.Update(msg)
@@ -47,7 +45,6 @@ func (p PageForClientModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return p, tea.Batch(cmds...)
 }
 
-// View implements tea.Model.
-func (p PageForClientModel) View() string {
+func (p PageForBackendModel) View() string {
 	return p.form.View()
 }
