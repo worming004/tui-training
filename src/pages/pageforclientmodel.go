@@ -35,19 +35,18 @@ func (p PageForClientModel) Init() (tea.Model, tea.Cmd) {
 // Update implements tea.Model.
 func (p PageForClientModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	log.Printf("[PageForClientModel] msg: %v, %T", msg, msg)
-	cmds := []tea.Cmd{}
 
 	form, cmd := p.form.Update(msg)
 	if f, ok := form.(*huh.Form); ok {
 		p.form = f
-		cmds = append(cmds, cmd)
 	}
 
 	if p.form.State == huh.StateCompleted {
-		return p, MsgToCmd(SwitchToMainPageMsg)
+		m, subCmd := NewDefaultWrapper(NewMainModel()).Init()
+		return m, tea.Batch(cmd, subCmd)
 	}
 
-	return p, tea.Batch(cmds...)
+	return p, cmd
 }
 
 // View implements tea.Model.
