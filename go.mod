@@ -1,4 +1,4 @@
-module tui
+module github.com/worming004/tui-training
 
 go 1.23.1
 

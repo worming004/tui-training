@@ -1,18 +1,18 @@
-package main
+package pages
 
 import (
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/huh/v2"
 )
 
-var pageForFrontendClient tea.Model = PageForFrontendModel{}
+var pageForBackendClient tea.Model = PageForBackendModel{}
 
-type PageForFrontendModel struct {
+type PageForBackendModel struct {
 	form *huh.Form
 }
 
-func NewPageForFrontendModel() PageForFrontendModel {
-	return PageForFrontendModel{
+func NewPageForBackendModel() PageForBackendModel {
+	return PageForBackendModel{
 		form: huh.NewForm(
 			huh.NewGroup(
 				huh.NewInput().
@@ -24,12 +24,12 @@ func NewPageForFrontendModel() PageForFrontendModel {
 	}
 }
 
-func (p PageForFrontendModel) Init() (tea.Model, tea.Cmd) {
+func (p PageForBackendModel) Init() (tea.Model, tea.Cmd) {
 	_, cmd := p.form.Init()
 	return p, cmd
 }
 
-func (p PageForFrontendModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (p PageForBackendModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmds := []tea.Cmd{}
 
 	form, cmd := p.form.Update(msg)
@@ -45,6 +45,6 @@ func (p PageForFrontendModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return p, tea.Batch(cmds...)
 }
 
-func (p PageForFrontendModel) View() string {
+func (p PageForBackendModel) View() string {
 	return p.form.View()
 }
