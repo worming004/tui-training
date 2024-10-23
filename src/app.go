@@ -16,7 +16,7 @@ func main() {
 	}
 	log.Default().SetOutput(logFile)
 
-	app := pages.NewDefaultAppModel()
+	app := pages.NewDefaultWrapper(pages.NewMainModel())
 	p := tea.NewProgram(app)
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)

@@ -59,11 +59,12 @@ func (m MainPageModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		pt := m.form.Get("ProjectType").(ProjectType)
 		switch pt {
 		case ClientProjectType:
-			cmds = append(cmds, MsgToCmd(SwitchToClientPageMsg))
+			log.Printf("[MainPageModel] return ForClientModel")
+			return NewDefaultWrapper(NewPageForClientModel()).Init()
 		case BackendProjectType:
-			cmds = append(cmds, MsgToCmd(SwitchToBackendPageMsg))
+			return NewDefaultWrapper(NewPageForBackendModel()).Init()
 		case FrontendProjectType:
-			cmds = append(cmds, MsgToCmd(SwitchToFrontendPageMsg))
+			return NewDefaultWrapper(NewPageForFrontendModel()).Init()
 		}
 	}
 

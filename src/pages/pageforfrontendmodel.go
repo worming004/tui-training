@@ -1,6 +1,8 @@
 package pages
 
 import (
+	"log"
+
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/huh/v2"
 )
@@ -30,6 +32,7 @@ func (p PageForFrontendModel) Init() (tea.Model, tea.Cmd) {
 }
 
 func (p PageForFrontendModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	log.Printf("[PageForFrontendModel] msg: %v, %T", msg, msg)
 	cmds := []tea.Cmd{}
 
 	form, cmd := p.form.Update(msg)
