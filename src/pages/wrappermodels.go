@@ -7,6 +7,7 @@ import (
 )
 
 var quit tea.Model = quitWrapper{}
+var handler tea.Model = dummyCommandHandler{}
 
 type quitWrapper struct {
 	inner tea.Model
@@ -17,7 +18,8 @@ func WrapWithQuit(inner tea.Model) quitWrapper {
 }
 
 func NewDefaultWrapper(inner tea.Model) tea.Model {
-	return WrapWithQuit(inner)
+	// return WrapWithQuit(WrapWithHandler(inner))
+	return WrapWithHandler(WrapWithQuit(inner))
 }
 
 func (q quitWrapper) Init() (tea.Model, tea.Cmd) {
@@ -26,7 +28,6 @@ func (q quitWrapper) Init() (tea.Model, tea.Cmd) {
 }
 
 func (q quitWrapper) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	log.Printf("[quitWrapper] msg: %v, %T", msg, msg)
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -35,10 +36,7 @@ func (q quitWrapper) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	log.Printf("[quitWrapper] start inner")
-	log.Printf("[quitWrapper] inner type %T", q.inner)
 	newModel, cmd := q.inner.Update(msg)
-	log.Printf("[quitWrapper] stop inner")
 	if newModel != q.inner {
 		return newModel, cmd
 	}
@@ -47,4 +45,41 @@ func (q quitWrapper) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (q quitWrapper) View() string {
 	return q.inner.View()
+}
+
+type dummyCommandHandler struct {
+	inner tea.Model
+}
+
+func WrapWithHandler(inner tea.Model) dummyCommandHandler {
+	log.Printf("[DummyCommandHandler] Wrapping with handler")
+	return dummyCommandHandler{inner}
+}
+
+// Init implements tea.Model.
+func (d dummyCommandHandler) Init() (tea.Model, tea.Cmd) {
+	_, cmd := d.inner.Init()
+	return d, cmd
+}
+
+// Update implements tea.Model.
+func (d dummyCommandHandler) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	log.Printf("[DummyCommandHandler] %+v, %T", msg, msg)
+	switch msg := msg.(type) {
+	case SendForm:
+		log.Printf("[DummyCommandHandler] Command received, SendForm: %+v", msg)
+	}
+
+	newModel, cmd := d.inner.Update(msg)
+	if newModel != d.inner {
+		log.Printf("[DummyCommandHandler] newModel != d.inner, update")
+		return newModel, cmd
+	}
+	return d, cmd
+}
+
+// View implements tea.Model.
+func (d dummyCommandHandler) View() string {
+	log.Printf("[DummyCommandHandler] View")
+	return d.inner.View()
 }
